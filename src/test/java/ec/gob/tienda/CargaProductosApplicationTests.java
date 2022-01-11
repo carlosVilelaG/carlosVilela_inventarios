@@ -1,13 +1,12 @@
 package ec.gob.tienda;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -22,20 +21,21 @@ import ec.gob.tienda.api.model.Producto;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:datasource.properties")
+@Sql("/db/insertProductos.sql")
 public class CargaProductosApplicationTests {
 
 	@Autowired
 	private ProductoDao productoDao;
 
-	@org.junit.Test
+	@Test
 	public void testLoadDataForTestClass() {
 		System.out.println("#############################");
 		System.out.println("#### CARGAR DATA ####");
 		System.out.println("#############################");
-		///assertEquals(5, productoDao.findAll().size());
+		assertTrue(productoDao.findAll().size()>0);
 	}
 
-	
+	@Test
 	public void mostrarInventario() {
 		System.out.println("#############################");
 		System.out.println("#### MOSTRAR INVENTARIO ####");
@@ -45,7 +45,8 @@ public class CargaProductosApplicationTests {
 		List<Stock> prods = new ArrayList<Stock>();
 		for (Producto p : productos) {
 			Stock s = new Stock();
-			s.setId(1L);
+			Long id =   (long) (Math.random()*6 + 1);
+			s.setId(id );
 			s.setCod(p.getCod());
 			s.setName(p.getName());
 			s.setPrice(p.getPrice());
@@ -62,5 +63,7 @@ public class CargaProductosApplicationTests {
 		}
 		
 		System.out.println("SALIDA JSON: \n" + json);
+		
+		assertNotNull(json);
 	}
 }
